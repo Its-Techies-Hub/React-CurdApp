@@ -31,7 +31,7 @@ class List extends Component{
         <input type="text" ref={(v)=>{
           this.input = v;
         }} defaultValue={this.props.details.name}/>
-        <button>done</button>
+        <button className="Done">done</button>
       </form>
     )
   }

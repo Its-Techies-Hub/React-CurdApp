@@ -1,6 +1,5 @@
 ::-webkit-scrollbar {
-  background-color: #71a9e9;
-  border: 1px solid #000;
+  background-color: #004fa8;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -9,6 +8,7 @@
 }
 
 .App {
+  color: #fff;
   width: 80%;
   height: 60%;
   position: absolute;
@@ -22,12 +22,12 @@
   overflow-x: hidden;
   overflow-y: scroll;
   scroll-behavior: smooth;
-  background-color: #fff;
+  background-color: rgba(0, 0, 0, 0.479);
 }
 
 .App h2 {
   text-align: center;
-  background-color: red;
+  background-color: #a80000;
   color: #fff;
   text-transform: capitalize;
   padding: 20px;
@@ -38,6 +38,7 @@
 
 .App form {
   margin: 0;
+  height: 10%;
   width: 100%;
   display: -ms-grid;
   display: grid;
@@ -47,12 +48,23 @@
 
 .App form input {
   outline: none;
-  border: 1px solid #000;
+  border: none;
+  border-bottom: 2px solid #000;
   border-radius: 2px;
   padding: 5px;
+  color: #fff;
+  -webkit-transition: 0.3s ease;
+  transition: 0.3s ease;
+  background-color: inherit;
+}
+
+.App form input:focus {
+  background-color: #000;
 }
 
 .App form button {
+  font-weight: bold;
+  color: #fff;
   outline: none;
   background-color: #71a9e9;
   border: 1px solid #000;
@@ -65,6 +77,10 @@
 .App form button:hover {
   cursor: pointer;
   background-color: #3d8de9;
+}
+
+.App form button.Done {
+  background-color: #13bd13;
 }
 
 .App ul {
