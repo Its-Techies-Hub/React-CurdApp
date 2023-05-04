@@ -1,0 +1,62 @@
+::-webkit-scrollbar{
+  background-color: #71a9e9;
+  border: 1px solid #000;
+}
+::-webkit-scrollbar-thumb{
+    background-color: #000000;
+    border-radius: 10px;
+}
+.App{
+  width: 80%;
+  height: 60%;
+  position: absolute;
+  transform: translate(-50%,-50%);
+  left: 50%;
+  top: 50%;
+  box-shadow: 0 0 10px 3px #000;
+  border-radius: 8px;
+  overflow-x: hidden;
+  overflow-y:scroll;
+  scroll-behavior: smooth;
+  background-color: #fff;
+  h2{
+    text-align: center;
+    background-color: red;
+    color: #fff;
+    text-transform: capitalize;
+    padding: 20px;
+    box-sizing: border-box;
+    margin: 0;
+  }
+  form{
+    margin: 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns:70% 30%;
+    input{
+      outline: none;
+      border: 1px solid #000;
+      border-radius: 2px;
+      padding:5px;
+    }
+    button{
+      outline: none;
+      background-color: #71a9e9;
+      border: 1px solid #000;
+      border-radius: 2px;
+      padding:5px;
+      transition: 0.4s linear;
+      &:hover{
+        cursor: pointer;
+        background-color: #3d8de9;
+      }
+    }
+  }
+  ul{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin: 0;
+    padding:0;
+  }
+}
