@@ -30,7 +30,7 @@ jobs:
           sarif_file: snyk.sarif
 
       - name: Upload SARIF file as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: snyk-sarif-report
           path: snyk.sarif
