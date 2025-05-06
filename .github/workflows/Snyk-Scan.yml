@@ -8,14 +8,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Run Snyk test
+      - name: Run Snyk test and output SARIF + JSON
         uses: snyk/actions/node@master
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: test
-          args: --json-file-output=snyk-results.json
+          args: >
+            --sarif-file-output=snyk.sarif
+            --json-file-output=snyk-results.json
 
       - name: Monitor the project with Snyk
         uses: snyk/actions/node@master
@@ -24,8 +26,15 @@ jobs:
         with:
           command: monitor
 
-      - name: Upload JSON file as artifact
+      - name: Upload SARIF to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk.sarif
+
+      - name: Upload SARIF + JSON as artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: snyk-json-report
-          path: snyk-results.json
+          name: snyk-reports
+          path: |
+            snyk-results.json
+            snyk.sarif
