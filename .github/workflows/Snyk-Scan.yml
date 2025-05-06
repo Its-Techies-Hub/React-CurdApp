@@ -15,8 +15,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: test
-         # args: --sarif-file-output=snyk.sarif # render results in the Security tab
-          args: --json-file-output=snyk-results.json # render the result in json
+          args: --json-file-output=snyk-results.json
 
       - name: Monitor the project with Snyk
         uses: snyk/actions/node@master
@@ -30,7 +29,7 @@ jobs:
         with:
           sarif_file: snyk-results.json
 
-      - name: Upload json file as artifact
+      - name: Upload JSON file as artifact
         uses: actions/upload-artifact@v4
         with:
           name: snyk-report
