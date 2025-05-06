@@ -16,7 +16,7 @@ jobs:
         with:
           command: test
          # args: --sarif-file-output=snyk.sarif # render results in the Security tab
-          args: --json-file-output=snyk-results.json
+          args: --json-file-output=snyk-results.json # render the result in json
 
       - name: Monitor the project with Snyk
         uses: snyk/actions/node@master
@@ -26,9 +26,9 @@ jobs:
           command: monitor
 
       - name: Upload Snyk results to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
-          file: snyk-results.json
+          sarif_file: snyk-results.json
 
       - name: Upload json file as artifact
         uses: actions/upload-artifact@v4
