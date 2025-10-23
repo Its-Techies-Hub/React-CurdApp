@@ -1,0 +1,18 @@
+trigger:
+  branches:
+    include:
+      - main
+pool:
+  name: Azure Pipelines
+stages:
+  - stage: Build
+    displayName: Build
+    jobs:
+      - job: build
+        displayName: npm build
+        steps:
+        - task: NodeTool@0
+          inputs:
+            versionSource: 'fromFile'
+            checkLatest: true
+            
