@@ -2,6 +2,41 @@ trigger:
   branches:
     include:
       - main
+parameters:
+  - name: Image Name
+    displayName: "Docker Image Name (repo/image)"
+    type: string
+    default: "techiecp/react-app"
+
+  - name: dockerfilePath
+    displayName: "Dockerfile Path"
+    type: string
+    default: "Dockerfile"
+
+  - name: snykOrg
+    displayName: "Snyk Organization ID"
+    type: string
+    default: "4c0a0d91-d376-4257-a15e-33987080d6ba"
+
+  - name: snykProject
+    displayName: "Snyk Project Name"
+    type: string
+    default: "React-App"
+
+  - name: failOnSeverity
+    displayName: "Fail Pipeline on Severity Level"
+    type: string
+    default: "high"
+
+  - name: containerRegistry
+    displayName: "Docker Service Connection"
+    type: string
+    default: "Docker-Service-Connection"
+
+  - name: snykServiceConnection
+    displayName: "Snyk Service Connection"
+    type: string
+    default: "Snyk-Service-Connection"
 pool:
   vmImage: ubuntu-latest
 stages:
@@ -17,12 +52,13 @@ stages:
             repository: 'techiecp/react-app'
             command: 'build'
             Dockerfile: '**/Dockerfile'
+            tags: $(Build.BuildId)
 
         - task: SnykSecurityScan@1
           inputs:
             serviceConnectionEndpoint: 'Snyk-Service-Connection'
             testType: 'container'
-            dockerImageName: 'techiecp/react-app:latest'
+            dockerImageName: 'techiecp/react-app:$(Build.BuildId)'
             dockerfilePath: '**/Dockerfile'
             monitorWhen: 'always'
             failOnIssues: false
