@@ -2,11 +2,20 @@ trigger:
   branches:
     include:
       - main
+
+pool:
+  vmImage: ubuntu-latest
+
 parameters:
-  - name: Image Name
+  - name: imageName
     displayName: "Docker Image Name (repo/image)"
     type: string
     default: "techiecp/react-app"
+
+  - name: tag
+    displayName: "Docker Image Tag"
+    type: string
+    default: "$(Build.BuildId)"
 
   - name: dockerfilePath
     displayName: "Dockerfile Path"
@@ -23,10 +32,20 @@ parameters:
     type: string
     default: "React-App"
 
+  - name: failOnIssues
+    displayName: "Fail On Issues"
+    type: boolean
+    default: false
+
   - name: failOnSeverity
     displayName: "Fail Pipeline on Severity Level"
     type: string
-    default: "high"
+    default: "low"
+    values:
+    - low
+    - moderate
+    - high
+    - critical
 
   - name: containerRegistry
     displayName: "Docker Service Connection"
@@ -37,41 +56,47 @@ parameters:
     displayName: "Snyk Service Connection"
     type: string
     default: "Snyk-Service-Connection"
-pool:
-  vmImage: ubuntu-latest
-stages:
-  - stage: Build
-    displayName: Build
-    jobs:
-      - job: build
-        displayName: docker build
-        steps:  
-        - task: Docker@2
-          inputs:
-            containerRegistry: 'Docker-Service-Connection'
-            repository: 'techiecp/react-app'
-            command: 'build'
-            Dockerfile: '**/Dockerfile'
-            tags: $(Build.BuildId)
 
-        - task: SnykSecurityScan@1
-          inputs:
-            serviceConnectionEndpoint: 'Snyk-Service-Connection'
-            testType: 'container'
-            dockerImageName: 'techiecp/react-app:$(Build.BuildId)'
-            dockerfilePath: '**/Dockerfile'
-            monitorWhen: 'always'
-            failOnIssues: false
-            projectName: 'React-App'
-            organization: '4c0a0d91-d376-4257-a15e-33987080d6ba'
-            failOnThreshold: 'high'
-        
-        - task: Docker@2
-          inputs:
-            containerRegistry: 'Docker-Service-Connection'
-            repository: 'techiecp/react-app'
-            command: 'push'
-        
-        
-        
-            
+stages:
+  - stage: BuildAndScan
+    displayName: "Build, Scan, and Push"
+    jobs:
+      - job: BuildJob
+        displayName: "Build Docker Image and Scan with Snyk"
+        steps:
+          - checkout: self
+
+          # Build Docker Image
+          - task: Docker@2
+            displayName: "Build Docker Image"
+            inputs:
+              containerRegistry: ${{ parameters.containerRegistry }}
+              repository: ${{ parameters.imageName }}
+              command: 'build'
+              Dockerfile: ${{ parameters.dockerfilePath }}
+              tags: |
+                ${{ parameters.tag }}
+
+          #  Snyk Security Scan
+          - task: SnykSecurityScan@1
+            displayName: "Snyk Security Scan"
+            inputs:
+              serviceConnectionEndpoint: '${{ parameters.snykServiceConnection }}'
+              testType: 'container'
+              dockerImageName: '${{ parameters.imageName }}:${{ parameters.tag }}'
+              dockerfilePath: '${{ parameters.dockerfilePath }}'
+              monitorWhen: 'always'
+              failOnIssues: '${{ parameters.failOnIssues }}'
+              projectName: '${{ parameters.snykProject }}'
+              organization: '${{ parameters.snykOrg }}'
+              failOnThreshold: '${{ parameters.failOnSeverity }}'
+
+          # 📦 Push to Docker Hub
+          - task: Docker@2
+            displayName: "Push Docker Image to Registry"
+            inputs:
+              containerRegistry: ${{ parameters.containerRegistry }}
+              repository: ${{ parameters.imageName }}
+              command: 'push'
+              tags: |
+                ${{ parameters.tag }}
