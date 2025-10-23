@@ -91,7 +91,7 @@ stages:
               organization: '${{ parameters.snykOrg }}'
               failOnThreshold: '${{ parameters.failOnSeverity }}'
 
-          # 📦 Push to Docker Hub
+          #  Push to Docker Hub
           - task: Docker@2
             displayName: "Push Docker Image to Registry"
             inputs:
