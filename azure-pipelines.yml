@@ -3,16 +3,39 @@ trigger:
     include:
       - main
 pool:
-  name: Azure Pipelines
+  vmImage: ubuntu-latest
 stages:
   - stage: Build
     displayName: Build
     jobs:
       - job: build
-        displayName: npm build
-        steps:
-        - task: NodeTool@0
+        displayName: docker build
+        steps:  
+        - task: Docker@2
           inputs:
-            versionSource: 'fromFile'
-            checkLatest: true
+            containerRegistry: 'Docker-Service-Connection'
+            repository: 'techiecp/react-app'
+            command: 'build'
+            Dockerfile: '**/Dockerfile'
+
+        - task: SnykSecurityScan@1
+          inputs:
+            serviceConnectionEndpoint: 'Snyk-Service-Connection'
+            testType: 'container'
+            dockerImageName: 'techiecp/react-app:latest'
+            dockerfilePath: '**/Dockerfile'
+            monitorWhen: 'always'
+            failOnIssues: false
+            projectName: 'React-App'
+            organization: '4c0a0d91-d376-4257-a15e-33987080d6ba'
+            failOnThreshold: 'high'
+        
+        - task: Docker@2
+          inputs:
+            containerRegistry: 'Docker-Service-Connection'
+            repository: 'techiecp/react-app'
+            command: 'push'
+        
+        
+        
             
