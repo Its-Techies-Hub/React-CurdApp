@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: react-app
-        image: techiecp/react-app:30
+        image: techiecp/react-app:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
